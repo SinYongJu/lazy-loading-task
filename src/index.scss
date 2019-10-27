@@ -1,0 +1,24 @@
+body,h1,h2,p,ul,ol{margin:0;padding:0}
+li{list-style:none}
+img{position:absolute;top:0;left:0;width:auto;height:100%;transition: all 1s ease-in-out;scale:1}
+img.lazy{background-color:#eee;filter: blur(10px);scale:2}
+body{padding-top:61px}
+.thumb_container{
+    overflow: hidden;
+    position: relative;
+    padding-bottom:56.25%;
+    background-color:#eee;
+    border-radius: 5px;
+    &:after{
+        position: absolute;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        border:1px solid rgba(0, 0, 0, 0.2);
+        background-color: rgba(0,0,0,0.1);
+        box-sizing: border-box;
+        border-radius: 5px;
+        content: ''
+    }
+}

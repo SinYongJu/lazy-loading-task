@@ -1,0 +1,25 @@
+.header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    box-sizing:border-box;
+    padding:10px 15px;
+    background-color: #f5f500;
+    z-index:10;
+    h1{
+        float:left;
+        text-transform: uppercase;
+    }
+    &:after{
+        display:block;
+        clear: both;
+        content:''
+    }
+
+    .Navigation{
+        float:right;
+    }
+    border-bottom:2px solid #777;
+
+}

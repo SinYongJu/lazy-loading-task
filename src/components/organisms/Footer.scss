@@ -1,0 +1,10 @@
+.footer{
+    background-color: #eee;
+    padding:10px 15px;
+    &:after{
+        display:block;
+        clear: both;
+        content:''
+    }
+
+}
