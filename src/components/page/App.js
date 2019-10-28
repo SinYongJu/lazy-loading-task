@@ -6,7 +6,7 @@ import PostList from "../organisms/PostList";
 import Banner from "../organisms/Banner";
 import Header from "../organisms/Header";
 import Footer from "../organisms/Footer";
-
+import { LazyLoadImageProvider } from "../util/lazyLoadImages";
 // lazyLoadObserver();
 const App = props => {
   console.log(props);
@@ -18,11 +18,11 @@ const App = props => {
   };
 
   return (
-    <>
+    <LazyLoadImageProvider>
       <Header />
       <LandingTemplate components={landingComponents} />
       <Footer />
-    </>
+    </LazyLoadImageProvider>
   );
 };
 

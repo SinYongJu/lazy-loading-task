@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useContext, createContext, useState, useEffect } from "react";
 
-function observerHandler(entries, obserber) {
+function observerHandler(entries, observer) {
   entries.map(entry => {
     let target = entry.target;
     if (entry.isIntersecting) {
@@ -9,25 +9,36 @@ function observerHandler(entries, obserber) {
     }
   });
 }
-const observer = new IntersectionObserver(observerHandler);
-const LazyLoadImages = Component => {
-  return class extends React.Component {
-    lazyLoadObserver = img => {
-      if (img) {
-        observer.observe(img);
-      }
-    };
-    render() {
-      return (
-        <Component
-          lazyAction={this.lazyLoadObserver}
-          {...this.props}
-        ></Component>
-      );
+
+const LazyLoadImageContext = createContext(null);
+const LazyLoadImageProvider = props => {
+  const [observer, setObserver] = useState(null);
+  useEffect(() => {
+    if (
+      !observer &&
+      "IntersectionObserver" in window &&
+      "IntersectionObserverEntry" in window &&
+      "intersectionRatio" in window.IntersectionObserverEntry.prototype
+    ) {
+      setObserver(new IntersectionObserver(observerHandler));
     }
+  }, [observer]);
+  const lazyLoad = img => {
+    observer.observe(img);
   };
+  const value = {
+    lazyLoad
+  };
+  return (
+    <LazyLoadImageContext.Provider value={value}>
+      {props.children}
+    </LazyLoadImageContext.Provider>
+  );
 };
-export default LazyLoadImages;
+
+const LazyLoadConsumer = LazyLoadImageContext.Consumer;
+
+export { LazyLoadImageContext, LazyLoadImageProvider, LazyLoadConsumer };
 
 /**
  * 1. 멀린 hoc 또는 context에서의 참조
