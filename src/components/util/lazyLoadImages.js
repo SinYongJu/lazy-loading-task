@@ -1,3 +1,20 @@
+import React from "react";
+
+const lazyLoadImages = () => {
+  const lazyLoader = () => {
+    return <div></div>;
+  };
+  return <lazyLoader></lazyLoader>;
+};
+
+export default lazyLoadImages;
+
+/**
+ * 1. 멀린 hoc 또는 context에서의 참조
+ * 2. 션 hoc or context에서의 이벤트 버스
+ *
+ */
+
 function isCurrentViewPortImageSrc(
   offsetTop,
   clientHeight,
@@ -88,6 +105,7 @@ export const lazyLoadImgHandler = img => {
   if ("IntersectionObserver" in window) {
     lazyLoadObserver(img);
   } else {
+    // 리액트 내에서 감지 할 수 있을 방법을 고안해 보자
     // lazyScrollHeight(img);
   }
 };
