@@ -1,13 +1,33 @@
 import React from "react";
 
-const lazyLoadImages = () => {
-  const lazyLoader = () => {
-    return <div></div>;
+function observerHandler(entries, obserber) {
+  entries.map(entry => {
+    let target = entry.target;
+    if (entry.isIntersecting) {
+      target.classList.remove("lazy");
+      target.src = target.dataset.src;
+    }
+  });
+}
+const observer = new IntersectionObserver(observerHandler);
+const LazyLoadImages = Component => {
+  return class extends React.Component {
+    lazyLoadObserver = img => {
+      if (img) {
+        observer.observe(img);
+      }
+    };
+    render() {
+      return (
+        <Component
+          lazyAction={this.lazyLoadObserver}
+          {...this.props}
+        ></Component>
+      );
+    }
   };
-  return <lazyLoader></lazyLoader>;
 };
-
-export default lazyLoadImages;
+export default LazyLoadImages;
 
 /**
  * 1. 멀린 hoc 또는 context에서의 참조
@@ -83,29 +103,3 @@ function throttle(func) {
     throttleTimeout = setTimeout(func, 10);
   };
 }
-
-function observerHandler(entries, obserber) {
-  entries.map(entry => {
-    let target = entry.target;
-    if (entry.isIntersecting) {
-      target.classList.remove("lazy");
-      target.src = target.dataset.src;
-    }
-  });
-}
-const lazyLoadObserver = img => {
-  if (img) {
-    const imgObserber = new IntersectionObserver(observerHandler);
-    imgObserber.observe(img);
-  }
-  return false;
-};
-
-export const lazyLoadImgHandler = img => {
-  if ("IntersectionObserver" in window) {
-    lazyLoadObserver(img);
-  } else {
-    // 리액트 내에서 감지 할 수 있을 방법을 고안해 보자
-    // lazyScrollHeight(img);
-  }
-};

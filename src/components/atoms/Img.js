@@ -1,17 +1,17 @@
 import React from "react";
-import { lazyLoadImgHandler } from "../util/lazyLoadImages";
+// lazyLoadObserver();
+import LazyLoadImages from "../util/lazyLoadImages";
+// import { lazyLoadImgHandler } from "../util/lazyLoadImages";
 const IS_NORMAL = false;
 const IS_MEDIUM = false;
-// lazyLoadObserver();
 
 const GetImageElements = props => {
   const imgRef = React.useRef(null);
   React.useEffect(() => {
     if (!IS_NORMAL) {
-      lazyLoadImgHandler(imgRef.current);
+      props.lazyAction(imgRef.current);
     }
-    return lazyLoadImgHandler(null);
-  }, []);
+  }, [props]);
   const { src, alt, prev, onError, onLoad } = props;
   return (
     <div className="thumb_container">
@@ -53,14 +53,14 @@ const Img = props => {
   const lazyLoadHandler = e => {
     console.log("loaded", e.currentTarget);
   };
-
+  const Image = LazyLoadImages(GetImageElements);
   return (
     <>
-      <GetImageElements
+      <Image
         onLoad={lazyLoadHandler}
         onError={lazyErrorHander}
         {...props}
-      ></GetImageElements>
+      ></Image>
     </>
   );
 };

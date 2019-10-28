@@ -12,7 +12,6 @@ const RankingItem = ({ data, rank }) => {
     webformatWidth,
     webformatHeight
   } = data ? data : {};
-  console.log(data);
   const src = largeImageURL;
   const prev = previewURL;
   const width = webformatWidth;
