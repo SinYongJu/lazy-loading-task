@@ -1,13 +1,13 @@
 import React from "react";
 import "./SubNav.scss";
-import { LazyLoadImageContext } from "../util/lazyLoadImages";
+import { ScrollContext } from "../context/ScrollContext";
 const SubNav = () => {
-  const { getScrollTop } = React.useContext(LazyLoadImageContext);
+  const { getScrollTop } = React.useContext(ScrollContext);
   let subRef = React.useRef(null);
   const [sticky, actionSticky] = React.useState(false);
   React.useEffect(() => {
     const offset = subRef.current.offsetTop + subRef.current.clientHeight;
-    if (getScrollTop() > offset) {
+    if (getScrollTop().top > offset) {
       actionSticky(c => true);
     } else {
       actionSticky(c => false);

@@ -1,7 +1,10 @@
 import React, { createContext, useState, useEffect } from "react";
-
+import { ScrollContext } from "./ScrollContext";
 const LazyLoadImageContext = createContext(null);
+const LAZY_CLASS = "lazy";
 const LazyLoadImageProvider = props => {
+  const ScrollCtx = React.useContext(ScrollContext);
+  const { getScrollTop } = ScrollCtx;
   const [observer, setObserver] = useState(null);
   useEffect(() => {
     if (
@@ -13,19 +16,6 @@ const LazyLoadImageProvider = props => {
       setObserver(new IntersectionObserver(observerHandler));
     }
   }, [observer]);
-  const [scrollTop, setScrollTop] = useState({ top: 0 });
-  React.useMemo(() => {
-    const updateScrollTop = e => {
-      setScrollTop(c => ({
-        ...c,
-        top: window.pageYOffset,
-        innerHeight: window.innerHeight
-      }));
-    };
-    if (observer === null)
-      window.addEventListener("scroll", throttle(updateScrollTop));
-    return () => window.removeEventListener("scroll", updateScrollTop);
-  }, [observer]);
 
   const lazyLoad = img => {
     if (observer !== null) {
@@ -35,19 +25,15 @@ const LazyLoadImageProvider = props => {
         isCurrentViewPortImageSrc(
           img.offsetParent.offsetTop,
           img.offsetParent.clientHeight,
-          scrollTop.top,
-          scrollTop.innerHeight
+          getScrollTop().top,
+          getScrollTop().innerHeight
         ),
         img
       );
     }
   };
-
-  const getScrollTop = () => scrollTop.top;
-
   const value = {
-    lazyLoad,
-    getScrollTop
+    lazyLoad
   };
   return (
     <LazyLoadImageContext.Provider value={value}>
@@ -64,7 +50,7 @@ function observerHandler(entries, observer) {
   entries.map(entry => {
     let target = entry.target;
     if (entry.isIntersecting) {
-      target.classList.remove("lazy");
+      target.classList.remove(LAZY_CLASS);
       target.src = target.dataset.src;
     }
   });
@@ -90,26 +76,10 @@ function isCurrentViewPortImageSrc(
 function removeLazyClass(isNotLazy, el) {
   if (isNotLazy) {
     el.src = "";
-    el.classList.add("lazy");
+    el.classList.add(LAZY_CLASS);
   } else {
     el.src = el.dataset.src;
     // Array.from(el.classList).find();
-    el.classList.remove("lazy");
+    el.classList.remove(LAZY_CLASS);
   }
-}
-/**
- *
- * throttling methods
- * @param { Function } func
- *
- */
-function throttle(func) {
-  let throttleTimeout = null;
-  console.log("클로져냐?");
-  return () => {
-    if (throttleTimeout !== null) {
-      clearTimeout(throttleTimeout);
-    }
-    throttleTimeout = setTimeout(func, 10);
-  };
 }

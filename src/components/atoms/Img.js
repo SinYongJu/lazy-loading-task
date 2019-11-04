@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from "react";
-import { LazyLoadImageContext } from "../util/lazyLoadImages";
+import { LazyLoadImageContext } from "../context/lazyLoadImages";
 const IS_NORMAL = false;
 const IS_MEDIUM = false;
 
