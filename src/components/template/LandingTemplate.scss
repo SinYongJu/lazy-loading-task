@@ -1,9 +1,11 @@
 main{
+    position:relative;
     max-width: 740px;
     margin:0 auto;
-    padding:40px 0;
+    padding:59px 0;
     &:after{display:block;clear: both;content:''}
 }
 .Banner{margin-top:50px}
 .Ranking{overflow: hidden;padding-top:50px;}
 .postList{float:left;width:600px;padding-top:50px;margin-right:40px}
+.SubNav{position:absolute;left:0;top:0;right:0;transition:all 2s ease-in-out}

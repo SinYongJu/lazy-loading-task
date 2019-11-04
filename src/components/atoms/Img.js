@@ -3,18 +3,28 @@ import { LazyLoadImageContext } from "../util/lazyLoadImages";
 const IS_NORMAL = false;
 const IS_MEDIUM = false;
 
-const GetImageElements = props => {
+const Img = props => {
   const imgRef = useRef(null);
+  const imgContainer = useRef(null);
   const { lazyLoad } = useContext(LazyLoadImageContext);
   React.useEffect(() => {
     if (!IS_NORMAL) {
       lazyLoad(imgRef.current);
     }
+    // console.dir(imgContainer.current.offsetTop);
   }, [lazyLoad]);
 
-  const { src, alt, prev, onError, onLoad } = props;
+  const { src, alt, prev } = props;
+
+  const onError = e => {
+    // console.log(e.currentTarget, "error");
+  };
+
+  const onLoad = e => {
+    // console.log("loaded", e.currentTarget);
+  };
   return (
-    <div className="thumb_container">
+    <div ref={imgContainer} className="thumb_container">
       {IS_NORMAL ? (
         <img
           onError={onError}
@@ -43,25 +53,6 @@ const GetImageElements = props => {
         />
       )}
     </div>
-  );
-};
-
-const Img = props => {
-  const lazyErrorHander = e => {
-    // console.log(e.currentTarget, "error");
-  };
-  const lazyLoadHandler = e => {
-    // console.log("loaded", e.currentTarget);
-  };
-  const Image = GetImageElements;
-  return (
-    <>
-      <Image
-        onLoad={lazyLoadHandler}
-        onError={lazyErrorHander}
-        {...props}
-      ></Image>
-    </>
   );
 };
 

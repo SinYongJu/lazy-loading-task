@@ -7,8 +7,9 @@ export const getContentApi = async target => {
     const length = result.length;
     const photos = await getPixaApi(length);
     result.map((item, index) => {
-      const src = photos[index].largeImageURL;
+      // const src = photos[index].largeImageURL;
       const prev = photos[index].previewURL;
+      const src = photos[index].webformatURL;
       const width = photos[index].webformatWidth;
       const height = photos[index].webformatHeight;
       return Object.assign(item, { src, prev, width, height });
@@ -22,7 +23,6 @@ export const getPixaApi = async length => {
   const pageLength = `&per_page=${length}`;
   try {
     const data = await fetch(`${API_URL}${pageLength}`).then(res => res.json());
-    console.log(data);
     return data.hits;
   } catch (e) {
     console.log(e);

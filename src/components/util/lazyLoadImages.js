@@ -1,14 +1,4 @@
-import React, { useContext, createContext, useState, useEffect } from "react";
-
-function observerHandler(entries, observer) {
-  entries.map(entry => {
-    let target = entry.target;
-    if (entry.isIntersecting) {
-      target.classList.remove("lazy");
-      target.src = target.dataset.src;
-    }
-  });
-}
+import React, { createContext, useState, useEffect } from "react";
 
 const LazyLoadImageContext = createContext(null);
 const LazyLoadImageProvider = props => {
@@ -23,11 +13,41 @@ const LazyLoadImageProvider = props => {
       setObserver(new IntersectionObserver(observerHandler));
     }
   }, [observer]);
+  const [scrollTop, setScrollTop] = useState({ top: 0 });
+  React.useMemo(() => {
+    const updateScrollTop = e => {
+      setScrollTop(c => ({
+        ...c,
+        top: window.pageYOffset,
+        innerHeight: window.innerHeight
+      }));
+    };
+    if (observer === null)
+      window.addEventListener("scroll", throttle(updateScrollTop));
+    return () => window.removeEventListener("scroll", updateScrollTop);
+  }, [observer]);
+
   const lazyLoad = img => {
-    observer.observe(img);
+    if (observer !== null) {
+      observer.observe(img);
+    } else {
+      removeLazyClass(
+        isCurrentViewPortImageSrc(
+          img.offsetParent.offsetTop,
+          img.offsetParent.clientHeight,
+          scrollTop.top,
+          scrollTop.innerHeight
+        ),
+        img
+      );
+    }
   };
+
+  const getScrollTop = () => scrollTop.top;
+
   const value = {
-    lazyLoad
+    lazyLoad,
+    getScrollTop
   };
   return (
     <LazyLoadImageContext.Provider value={value}>
@@ -40,6 +60,15 @@ const LazyLoadConsumer = LazyLoadImageContext.Consumer;
 
 export { LazyLoadImageContext, LazyLoadImageProvider, LazyLoadConsumer };
 
+function observerHandler(entries, observer) {
+  entries.map(entry => {
+    let target = entry.target;
+    if (entry.isIntersecting) {
+      target.classList.remove("lazy");
+      target.src = target.dataset.src;
+    }
+  });
+}
 /**
  * 1. 멀린 hoc 또는 context에서의 참조
  * 2. 션 hoc or context에서의 이벤트 버스
@@ -49,8 +78,8 @@ export { LazyLoadImageContext, LazyLoadImageProvider, LazyLoadConsumer };
 function isCurrentViewPortImageSrc(
   offsetTop,
   clientHeight,
-  windowInnerHeight,
-  scrollTop
+  scrollTop,
+  windowInnerHeight
 ) {
   return (
     offsetTop + clientHeight < scrollTop ||
@@ -58,45 +87,15 @@ function isCurrentViewPortImageSrc(
   );
 }
 
-function addLazyClass(isLazy, el) {
-  if (!isLazy) {
-    //   el.src = ''
-    //   el.classList.add('lazy')
-    // } else {
+function removeLazyClass(isNotLazy, el) {
+  if (isNotLazy) {
+    el.src = "";
+    el.classList.add("lazy");
+  } else {
     el.src = el.dataset.src;
     // Array.from(el.classList).find();
     el.classList.remove("lazy");
   }
-}
-
-function lazyScrollHeight(el) {
-  const lazyloader = el => {
-    let scrollTop = window.pageYOffset;
-    console.log("closure scroll 실행", el);
-    //here
-    let { offsetTop, clientHeight } = el;
-    addLazyClass(
-      isCurrentViewPortImageSrc(
-        offsetTop,
-        clientHeight,
-        window.innerHeight,
-        scrollTop
-      ),
-      el
-    );
-    // }); // end
-    if (!el) {
-      document.removeEventListener("scroll", lazyThrottle);
-      window.removeEventListener("resize", lazyThrottle);
-      window.removeEventListener("orientationChange", lazyThrottle);
-    }
-  };
-
-  const lazyThrottle = throttle(lazyloader).bind(el);
-  lazyThrottle(); // 시작시 화면에 따른 로딩을 위함
-  document.addEventListener("scroll", lazyThrottle);
-  window.addEventListener("resize", lazyThrottle);
-  window.addEventListener("orientationChange", lazyThrottle);
 }
 /**
  *
@@ -107,8 +106,8 @@ function lazyScrollHeight(el) {
 function throttle(func) {
   let throttleTimeout = null;
   console.log("클로져냐?");
-  return el => {
-    if (throttleTimeout) {
+  return () => {
+    if (throttleTimeout !== null) {
       clearTimeout(throttleTimeout);
     }
     throttleTimeout = setTimeout(func, 10);

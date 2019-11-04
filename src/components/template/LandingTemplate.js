@@ -1,12 +1,12 @@
 import React from "react";
 import "./LandingTemplate.scss";
 const LandingTemplate = props => {
-  const { feature, sideRight, postlist, banner } = props.components;
+  const { feature, sideRight, subNav, postlist, banner } = props.components;
   return (
     <main>
+      {subNav}
       {feature}
       {banner}
-
       {postlist}
       {sideRight}
     </main>

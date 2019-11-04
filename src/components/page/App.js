@@ -7,14 +7,15 @@ import Banner from "../organisms/Banner";
 import Header from "../organisms/Header";
 import Footer from "../organisms/Footer";
 import { LazyLoadImageProvider } from "../util/lazyLoadImages";
+import SubNav from "../organisms/SubNav";
 // lazyLoadObserver();
 const App = props => {
-  console.log(props);
   const landingComponents = {
     feature: <Feature />,
     banner: <Banner />,
     sideRight: <Ranking />,
-    postlist: <PostList />
+    postlist: <PostList />,
+    subNav: <SubNav />
   };
 
   return (
