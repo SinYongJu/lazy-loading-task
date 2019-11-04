@@ -1,24 +1,9 @@
 import React from "react";
 import "./Feature.scss";
 import { getContentApi } from "../util/api";
-import Img from "../atoms/Img";
+import FeatureItem from "../molecules/FeatureItem";
 
 const FEATURE = "feature";
-
-const ListItem = ({ data }) => {
-  const { src, title, desc, prev, width, height } = data ? data : {};
-  return (
-    <li className="bannerItem">
-      <div className="wrap_thumb">
-        <Img src={src} prev={prev} width={width} height={height} />
-      </div>
-      <div className="wrap_info">
-        <strong>{title}</strong>
-        <p>{desc}</p>
-      </div>
-    </li>
-  );
-};
 
 const Feature = () => {
   const [list, setListData] = React.useState(null);
@@ -31,7 +16,7 @@ const Feature = () => {
   const drawList = () => {
     return list ? (
       list.map((item, index) => {
-        return <ListItem key={index} data={item}></ListItem>;
+        return <FeatureItem key={index} data={item} />;
       })
     ) : (
       <div>...loading</div>

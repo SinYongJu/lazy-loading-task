@@ -1,34 +1,7 @@
 import React from "react";
-import Img from "../atoms/Img";
-import "./Ranking.scss";
 import { getPixaApi } from "../util/api";
-
-const RankingItem = ({ data, rank }) => {
-  const {
-    largeImageURL,
-    title,
-    desc,
-    previewURL,
-    webformatWidth,
-    webformatHeight
-  } = data ? data : {};
-  const src = largeImageURL;
-  const prev = previewURL;
-  const width = webformatWidth;
-  const height = webformatHeight;
-  return (
-    <li className="RankItem">
-      <em>{rank}</em>
-      <div className="wrap_thumb">
-        <Img src={src} prev={prev} width={30} height={30} />
-      </div>
-      <div className="wrap_info">
-        <strong>{title}</strong>
-        <p>{desc}</p>
-      </div>
-    </li>
-  );
-};
+import RankingItem from "../molecules/RankingItem";
+import "./Ranking.scss";
 
 const Ranking = () => {
   const [list, setListData] = React.useState([]);

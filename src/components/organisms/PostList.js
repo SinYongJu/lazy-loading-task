@@ -1,23 +1,10 @@
 import React from "react";
 import "./PostList.scss";
-import Img from "../atoms/Img";
 import { getContentApi } from "../util/api";
+import PostItem from "../molecules/PostItem";
 
 const POST = "post";
-const PostItem = ({ data }) => {
-  const { src, title, desc, prev, width, height } = data ? data : {};
-  return (
-    <li className="postItem">
-      <div className="wrap_thumb">
-        <Img src={src} prev={prev} width={width} height={height} />
-      </div>
-      <div className="wrap_info">
-        <strong>{title}</strong>
-        <p>{desc}</p>
-      </div>
-    </li>
-  );
-};
+
 const PostList = () => {
   const [list, setListData] = React.useState(null);
 
